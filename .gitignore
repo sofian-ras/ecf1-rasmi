@@ -1,0 +1,20 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# --- Données temporaires ---
+# On ne garde pas les images téléchargées en local
+data/images/
+# On ne garde pas les fichiers JSON de test si on veut un dépôt propre
+# data/*.json
+
+# --- Systèmes ---
+.DS_Store
+Thumbs.db
+
+# --- Docker ---
+# Si tu as des données persistantes stockées par Docker en local
+.docker/

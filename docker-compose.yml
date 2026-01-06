@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: ecf_postgres_db
+    environment:
+      POSTGRES_USER: admin_rasmi
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: ecf_db
+    ports:
+      - "5433:5432"
+
+  ecf1_pgadmin:
+    image: dpage/pgadmin4
+    container_name: ecf1_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@rasmi.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+  minio:
+    image: minio/minio
+    container_name: ecf_minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
