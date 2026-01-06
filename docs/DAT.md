@@ -1,4 +1,4 @@
-# dossier d'architecture technique (dat)
+### 1ere methode: scraping simple avec requests et BeautifulSoup.
 
 ## 1. choix d'architecture globale
 
