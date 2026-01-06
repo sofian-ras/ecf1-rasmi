@@ -1,13 +1,11 @@
 ### 1ere methode: scraping simple avec requests et BeautifulSoup.
 
-## 1. choix d'architecture globale
+## QUESTION 1. choix d'architecture globale
 
-### architecture choisie: data lakehouse simplifie
+### architecture choisie: scrapy
 
-j'ai choisi une architecture en trois couches:
-- couche raw: stockage des donnees brutes en json
-- couche transformed: donnees nettoyees en postgres
-- couche analytics: meme base postgres avec requetes sql
+- Stockage Relationnel (PostgreSQL) : Pour les données structurées (prix, titres, adresses) afin de permettre des analyses SQL rapides.
+- Stockage Objet (MinIO) : Pour l'archivage des fichiers JSON bruts et la centralisation des images récupérées sur le web.
 
 ### pourquoi ce choix?
 
@@ -24,7 +22,7 @@ pour un projet de cette taille avec 3 sources de donnees, une architecture lakeh
 - inconvenients: pas de sql natif, moins bon pour les jointures
 - pourquoi pas choisi: le besoin demande du sql
 
-## 2. choix des technologies
+## QUESTION 2. choix des technologies
 
 ### stockage des donnees brutes: fichiers json
 
@@ -42,11 +40,6 @@ pour un projet de cette taille avec 3 sources de donnees, une architecture lakeh
 - types de donnees riches (array, json, etc)
 - facile a dockeriser
 - bonne documentation
-
-**alternative: mysql**
-- moins de fonctionnalites avancees (pas de array)
-- window functions ajoutees recemment
-- moins adapte pour l'analytique
 
 ### interrogation sql: postgresql direct
 
