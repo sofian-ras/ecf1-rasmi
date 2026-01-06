@@ -43,19 +43,33 @@ class PostgresPipeline:
         )
         self.cur = self.conn.cursor()
 
-    def upload_image_direct(self, item):
-        if item.get('image_urls'):
-            url = item['image_urls'][0]
-            reponse = requests.get(url)
-            image_en_memoire = BytesIO(reponse.content)
-            
-            # 2. On l'envoie direct sur MinIO
-            nom_fichier = url.split('/')[-1]
-            self.s3_client.upload_fileobj(
-                image_en_memoire, 
-                "mon-bucket", 
-                f"images/{nom_fichier}"
-            )
+    def open_spider(self, spider):
+        """
+        Cette fonction s'exécute AVANT que le robot ne commence à scraper.
+        Elle crée la table si elle n'existe pas.
+        """
+        if spider.name == 'books':
+            self.cur.execute("""
+                CREATE TABLE IF NOT EXISTS books (
+                    id SERIAL PRIMARY KEY,
+                    titre TEXT,
+                    prix TEXT,
+                    note TEXT,
+                    disponibilite TEXT,
+                    categorie TEXT
+                );
+            """)
+        elif spider.name == 'quotes':
+            self.cur.execute("""
+                CREATE TABLE IF NOT EXISTS quotes (
+                    id SERIAL PRIMARY KEY,
+                    texte TEXT,
+                    auteur TEXT,
+                    tags TEXT
+                );
+            """)
+        self.conn.commit()
+        print(f"✅ Table pour le spider '{spider.name}' vérifiée/créée.")
 
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
@@ -79,8 +93,8 @@ class PostgresPipeline:
             
             self.conn.commit()
         except Exception as e:
-            print(f"Erreur SQL : {e}")
-            self.conn.rollback() # ICI on peut faire un rollback car self.conn existe
+            print(f" Erreur SQL dans {spider.name} : {e}")
+            self.conn.rollback()
             
         return item
 
